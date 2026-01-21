@@ -1,5 +1,5 @@
-import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
+import { deepseek } from '@ai-sdk/deepseek';
 
 export const maxDuration = 30;
 
@@ -7,44 +7,107 @@ export async function POST(req: Request) {
   try {
     const { prompt, platform } = await req.json();
 
-    let systemPrompt = "You are a professional social media content creator.";
+    if (!process.env.DEEPSEEK_API_KEY) {
+      return new Response(
+        JSON.stringify({ error: 'DEEPSEEK_API_KEY is not configured' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    let systemPrompt = "You are a professional social media content creator and copywriter expert. Always use proper Markdown formatting for better readability.";
 
     if (platform === 'twitter') {
       systemPrompt += `
         Please rewrite the following content into a viral Twitter thread or a single punchy tweet.
-        - Use short sentences.
-        - Use spacing for readability.
-        - Include 1-3 relevant hashtags.
-        - Tone: Engaging, slightly provocative, or insightful.
-        - No more than 280 characters per tweet if it's a thread.
-        - If the input is Chinese, output in Chinese.
+        
+        **Format Requirements (use Markdown):**
+        - Start with a strong hook (use **bold** for emphasis)
+        - Use short paragraphs (2-3 lines max)
+        - Add blank lines between sections for readability
+        - Use bullet points (-) or numbered lists (1., 2., 3.) when listing items
+        - Include 1-3 relevant hashtags at the end
+        - Tone: Engaging, slightly provocative, or insightful
+        - If the input is Chinese, output in Chinese
+        
+        **Example structure:**
+        **Hook statement here**
+        
+        Main point elaborated...
+        
+        - Point 1
+        - Point 2
+        - Point 3
+        
+        Conclusion or call to action.
+        
+        #hashtag1 #hashtag2
       `;
     } else if (platform === 'xiaohongshu') {
       systemPrompt += `
-        请将以下内容重写为一篇非常有吸引力的"小红书"笔记。
-        - 标题要吸引眼球（使用 Emoji）。
-        - 正文多使用 Emoji (🌟, ✨, 💡, 🏷️)。
-        - 语气亲切、活泼，像在和闺蜜分享。
-        - 结尾包含相关标签（Hashtags）。
-        - 重点突出，分段清晰。
-        - 使用中文。
+        你是一位精通小红书流量密码的顶级博主。请将以下内容重写为一篇非常有吸引力的小红书笔记。
+        
+        **格式要求（使用 Markdown）：**
+        - 标题：使用 ## 二级标题，5-10个字 + Emoji，足够吸引眼球
+        - 开场：用 **加粗** 强调关键词或利益点
+        - 正文：语气亲切活泼，分段清晰（每段2-3行），段落间留空行
+        - 使用 Emoji：每段开头或关键词后添加 (🌟, ✨, 💡, 🔥, 💰, ⚡, 🌈)
+        - 列表：用 - 或数字序号展示要点
+        - 互动：结尾用 **加粗** 引导点赞收藏
+        - 标签：最后用 #标签 格式添加 5-8 个 hashtags
+        - 语言：必须使用中文
+        
+        **示例结构：**
+        ## 标题 + Emoji
+        
+        **开场吸引点** 宝子们！
+        
+        正文第一段... ✨
+        
+        正文第二段... 💡
+        
+        ### 核心要点：
+        
+        1. 要点一
+        2. 要点二  
+        3. 要点三
+        
+        **总结或互动引导**
+        
+        #标签1 #标签2 #标签3
       `;
     } else if (platform === 'linkedin') {
       systemPrompt += `
         Please rewrite the following content into a professional LinkedIn post.
-        - Tone: Professional, authoritative, yet accessible.
-        - Focus on industry insights, career growth, or business value.
-        - Use bullet points for readability.
-        - End with a call to action or a thought-provoking question.
-        - Minimal use of emojis (keep it professional).
-        - If the input is Chinese, output in Chinese.
+        
+        **Format Requirements (use Markdown):**
+        - Start with a compelling hook (1-2 sentences, use **bold** for key phrases)
+        - Add blank lines between sections
+        - Use numbered lists (1., 2., 3.) or bullet points (-) for key insights
+        - Structure: Hook → Value/Insights → Call to Action
+        - Tone: Professional, authoritative, yet accessible
+        - Minimal emojis (max 3-5 total, use sparingly)
+        - If the input is Chinese, output in Chinese
+        
+        **Example structure:**
+        **Opening hook or question**
+        
+        Context paragraph...
+        
+        ### Key Insights:
+        
+        1. First insight
+        2. Second insight
+        3. Third insight
+        
+        Conclusion paragraph with call to action.
       `;
     }
 
     const result = streamText({
-      model: openai('gpt-4-turbo'),
+      model: deepseek('deepseek-chat'),
       system: systemPrompt,
       prompt: prompt,
+      temperature: 0.7, // 适中的创造力
     });
 
     return result.toTextStreamResponse();

@@ -6,7 +6,7 @@
 
 1. **GitHub/GitLab/Bitbucket 账号**：项目需要推送到 Git 仓库
 2. **Vercel 账号**：如果没有，请访问 [vercel.com](https://vercel.com) 注册
-3. **OpenAI API Key**：确保你有有效的 OpenAI API Key
+3. **DeepSeek API Key**：确保你有有效的 DeepSeek API Key
 
 ## 🎯 部署步骤
 
@@ -46,8 +46,8 @@ Vercel 会自动检测到这是一个 Next.js 项目，配置如下：
 在项目设置页面，找到 **"Environment Variables"** 部分：
 
 1. 添加环境变量：
-   - **Name**: `OPENAI_API_KEY`
-   - **Value**: 你的 OpenAI API Key（格式：`sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`）
+   - **Name**: `DEEPSEEK_API_KEY`
+   - **Value**: 你的 DeepSeek API Key（格式：`sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`）
    - **Environment**: 选择所有环境（Production、Preview、Development）
 
 2. 点击 **"Save"**
@@ -89,10 +89,10 @@ vercel
 #### 4. 设置环境变量
 
 ```bash
-vercel env add OPENAI_API_KEY
+vercel env add DEEPSEEK_API_KEY
 ```
 
-输入你的 OpenAI API Key，并选择应用环境（Production、Preview、Development）。
+输入你的 DeepSeek API Key，并选择应用环境（Production、Preview、Development）。
 
 #### 5. 部署到生产环境
 
@@ -111,13 +111,13 @@ vercel --prod
 如果你的 API 调用经常超时，考虑：
 1. 升级到 Vercel Pro 计划
 2. 优化 prompt 长度
-3. 使用更快的模型（如 `gpt-3.5-turbo` 而不是 `gpt-4-turbo`）
+3. 使用更快的模型（DeepSeek V3 已经非常快了）
 
 ### 环境变量
 
 确保在 Vercel Dashboard 中设置了以下环境变量：
 
-- `OPENAI_API_KEY`: 你的 OpenAI API Key
+- `DEEPSEEK_API_KEY`: 你的 DeepSeek API Key
 
 ### 构建配置
 
@@ -157,7 +157,7 @@ vercel --prod
 **问题**: 生成内容时出现服务器错误
 
 **解决方案**:
-- 检查 `OPENAI_API_KEY` 环境变量是否正确设置
+- 检查 `DEEPSEEK_API_KEY` 环境变量是否正确设置
 - 确认 API Key 有效且有余额
 - 查看 Vercel 函数日志（Dashboard → 项目 → Functions → 查看日志）
 
@@ -166,7 +166,7 @@ vercel --prod
 **问题**: API 调用超时
 
 **解决方案**:
-- 检查是否使用了 `gpt-4-turbo`（较慢），考虑使用 `gpt-3.5-turbo`
+- DeepSeek V3 通常很快，如果超时请检查网络连接
 - 升级到 Vercel Pro 计划以获得更长的执行时间
 - 优化 prompt 长度
 
@@ -186,7 +186,7 @@ vercel --prod
 - [Vercel 文档](https://vercel.com/docs)
 - [Next.js 部署文档](https://nextjs.org/docs/deployment)
 - [Vercel AI SDK 文档](https://sdk.vercel.ai/docs)
-- [OpenAI API 文档](https://platform.openai.com/docs)
+- [DeepSeek API 文档](https://api-docs.deepseek.com/)
 
 ---
 
