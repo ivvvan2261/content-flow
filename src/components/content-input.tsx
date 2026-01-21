@@ -82,13 +82,13 @@ export function ContentInput({
             </TabsTrigger>
           </TabsList>
           
-          <div className="mt-4 flex-1">
+          <div className="mt-4 flex-1 flex flex-col max-h-[500px]">
             <TabsContent value="text" className="mt-0 h-full flex flex-col gap-2">
               <Label htmlFor="content" className="sr-only">Content</Label>
               <Textarea 
                 id="content" 
                 placeholder="在这里粘贴您的文章、博客或草稿..." 
-                className="flex-1 resize-none border-0 focus-visible:ring-0 p-0 text-base"
+                className="flex-1 resize-none border-0 focus-visible:ring-0 p-0 text-base overflow-y-auto"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
               />

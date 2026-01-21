@@ -47,10 +47,14 @@ npm install
 cp .env.example .env.local
 ```
 
-编辑 `.env.local` 文件，填入你的 DeepSeek API Key：
+编辑 `.env.local` 文件，填入你的 API Keys：
 
 ```env
+# DeepSeek API Key (用于文案生成)
 DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Zhipu AI API Key (用于图片生成)
+ZHIPU_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxx
 ```
 
 > **注意**: 本项目默认使用 DeepSeek V3 模型。你需要确保你的账号有余额且 API Key 有效。
@@ -72,7 +76,7 @@ npm run dev
 1. 将代码推送到 GitHub/GitLab/Bitbucket
 2. 访问 [Vercel Dashboard](https://vercel.com/dashboard)
 3. 导入你的 Git 仓库
-4. 配置环境变量 `DEEPSEEK_API_KEY`
+4. 配置环境变量 `DEEPSEEK_API_KEY` 和 `ZHIPU_API_KEY`
 5. 点击部署
 
 部署完成后，每次推送代码都会自动触发新的部署。
@@ -98,7 +102,7 @@ content-flow/
 
 - [x] **MVP**: 文本输入 -> 多平台文案生成
 - [x] **B站视频支持**: 输入 B站 视频链接，自动提取字幕并生成文案
-- [ ] **图片生成**: 根据文案自动生成小红书封面图 (DALL-E 3)
+- [x] **AI 智能配图**: 根据目标平台自动生成适配比例与风格的封面图（如小红书竖图、公众号横图），支持 CogView-4
 - [ ] **用户系统**: 保存生成历史，通过 Supabase/Clerk 实现登录
 - [ ] **SEO 优化**: 增加着陆页 (Landing Page)
 - [ ] **多模型支持**: 已支持 DeepSeek V3，未来计划支持 Claude 3.5 Sonnet
