@@ -2,18 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth, useClerk } from "@clerk/nextjs";
 import { ContentInput } from "@/components/content-input";
 import Link from "next/link";
 import { ContentOutput } from "@/components/content-output";
 import { useState } from "react";
 import { useCompletion } from "@ai-sdk/react";
+import { toast } from "sonner";
 
 export default function Home() {
   const [inputContent, setInputContent] = useState("");
   const [biliUrl, setBiliUrl] = useState("");
   const [inputType, setInputType] = useState("text");
   const [platform, setPlatform] = useState("xiaohongshu");
+  const { userId } = useAuth();
+  const { openSignIn } = useClerk();
   
   const { completion, complete, isLoading } = useCompletion({
     api: '/api/generate',
@@ -21,6 +24,12 @@ export default function Home() {
   });
 
   const handleGenerate = () => {
+    if (!userId) {
+      toast.error("请先登录再使用生成功能");
+      openSignIn();
+      return;
+    }
+
     if (inputType === 'text') {
       if (!inputContent) return;
       complete(inputContent, {

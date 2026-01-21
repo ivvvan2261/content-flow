@@ -123,7 +123,7 @@ content-flow/
 │   │   └── page.tsx   # 主页面
 │   ├── components/    # UI 组件
 │   ├── lib/           # 工具函数 (DB, Bilibili, Utils)
-│   └── middleware.ts  # 路由保护中间件
+│   └── proxy.ts       # 路由保护代理 (原 middleware)
 ├── public/
 └── ...
 ```

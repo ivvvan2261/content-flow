@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Type, Video, Loader2, Download } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner"; // Assuming you have sonner or similar toast, if not we'll use simple alert or add it
+import { toast } from "sonner";
+import { useAuth, useClerk } from "@clerk/nextjs";
 
 interface ContentInputProps {
   content: string;
@@ -32,8 +33,16 @@ export function ContentInput({
   isGenerating 
 }: ContentInputProps) {
   const [isFetching, setIsFetching] = useState(false);
+  const { userId } = useAuth();
+  const { openSignIn } = useClerk();
 
   const handleFetchBilibili = async () => {
+    if (!userId) {
+      toast.error("请先登录再使用解析功能");
+      openSignIn();
+      return;
+    }
+
     if (!biliUrl) return;
 
     setIsFetching(true);
@@ -53,10 +62,11 @@ export function ContentInput({
       // Success: Switch to text tab and fill content
       setContent(data.content);
       setInputType('text');
+      toast.success('内容获取成功！');
       
     } catch (error) {
       console.error(error);
-      alert('获取 B 站内容失败，请检查链接或稍后重试。'); // Simple fallback
+      toast.error('获取 B 站内容失败，请检查链接或稍后重试。');
     } finally {
       setIsFetching(false);
     }
