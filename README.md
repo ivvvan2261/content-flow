@@ -65,7 +65,7 @@ npm run dev
 
 ## 🌐 部署到 Vercel
 
-本项目可以一键部署到 Vercel。详细部署指南请查看 [DEPLOY.md](./DEPLOY.md)。
+本项目可以一键部署到 Vercel。
 
 **快速部署步骤**：
 
