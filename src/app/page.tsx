@@ -9,6 +9,8 @@ import { useCompletion } from "@ai-sdk/react";
 
 export default function Home() {
   const [inputContent, setInputContent] = useState("");
+  const [biliUrl, setBiliUrl] = useState("");
+  const [inputType, setInputType] = useState("text");
   const [platform, setPlatform] = useState("xiaohongshu");
   
   const { completion, complete, isLoading } = useCompletion({
@@ -17,19 +19,22 @@ export default function Home() {
   });
 
   const handleGenerate = () => {
-    if (!inputContent) return;
-    complete(inputContent, {
-      body: { platform }
-    });
+    if (inputType === 'text') {
+      if (!inputContent) return;
+      complete(inputContent, {
+        body: { platform }
+      });
+    } else {
+      if (!biliUrl) return;
+      // Send empty prompt for bili, backend uses biliUrl
+      complete('', {
+        body: { platform, biliUrl }
+      });
+    }
   };
 
-  // 当切换平台时，如果我们想自动重新生成（可选），或者保留当前状态
-  // 这里暂时只更新 platform 状态，用户需要手动点生成，或者我们可以在这里自动触发
   const handlePlatformChange = (newPlatform: string) => {
     setPlatform(newPlatform);
-    // 如果有内容，自动为新平台重新生成？
-    // 为了节省 token，暂时让用户手动点击，或者我们判断如果 input 没变，就不自动生成？
-    // MVP: 用户手动点击生成，体验更可控
   };
 
   return (
@@ -59,6 +64,10 @@ export default function Home() {
             <ContentInput 
               content={inputContent} 
               setContent={setInputContent}
+              biliUrl={biliUrl}
+              setBiliUrl={setBiliUrl}
+              inputType={inputType}
+              setInputType={setInputType}
               onGenerate={handleGenerate}
               isGenerating={isLoading}
             />

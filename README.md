@@ -44,7 +44,7 @@ npm install
 复制示例环境文件：
 
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 ```
 
 编辑 `.env.local` 文件，填入你的 DeepSeek API Key：
@@ -97,7 +97,7 @@ content-flow/
 ## 🗺️ Roadmap (开发计划)
 
 - [x] **MVP**: 文本输入 -> 多平台文案生成
-- [ ] **B站视频支持**: 输入 B站 视频链接，自动提取字幕并生成文案
+- [x] **B站视频支持**: 输入 B站 视频链接，自动提取字幕并生成文案
 - [ ] **图片生成**: 根据文案自动生成小红书封面图 (DALL-E 3)
 - [ ] **用户系统**: 保存生成历史，通过 Supabase/Clerk 实现登录
 - [ ] **SEO 优化**: 增加着陆页 (Landing Page)

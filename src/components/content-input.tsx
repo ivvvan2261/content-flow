@@ -6,19 +6,68 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Type, Video, Loader2 } from "lucide-react";
+import { Sparkles, Type, Video, Loader2, Download } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner"; // Assuming you have sonner or similar toast, if not we'll use simple alert or add it
 
 interface ContentInputProps {
   content: string;
   setContent: (v: string) => void;
+  biliUrl: string;
+  setBiliUrl: (v: string) => void;
+  inputType: string;
+  setInputType: (v: string) => void;
   onGenerate: () => void;
   isGenerating: boolean;
 }
 
-export function ContentInput({ content, setContent, onGenerate, isGenerating }: ContentInputProps) {
-  const [inputType, setInputType] = useState("text");
-  const [biliUrl, setBiliUrl] = useState("");
+export function ContentInput({ 
+  content, 
+  setContent, 
+  biliUrl, 
+  setBiliUrl, 
+  inputType, 
+  setInputType, 
+  onGenerate, 
+  isGenerating 
+}: ContentInputProps) {
+  const [isFetching, setIsFetching] = useState(false);
+
+  const handleFetchBilibili = async () => {
+    if (!biliUrl) return;
+
+    setIsFetching(true);
+    try {
+      const res = await fetch('/api/fetch-bilibili', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: biliUrl }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || '获取失败');
+      }
+
+      // Success: Switch to text tab and fill content
+      setContent(data.content);
+      setInputType('text');
+      
+    } catch (error) {
+      console.error(error);
+      alert('获取 B 站内容失败，请检查链接或稍后重试。'); // Simple fallback
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const isButtonDisabled = () => {
+    if (isGenerating) return true;
+    if (inputType === "text" && !content.trim()) return true;
+    if (inputType === "bilibili" && !biliUrl.trim()) return true;
+    return false;
+  };
 
   return (
     <Card className="flex-1 flex flex-col shadow-sm h-full">
@@ -55,8 +104,23 @@ export function ContentInput({ content, setContent, onGenerate, isGenerating }: 
                     onChange={(e) => setBiliUrl(e.target.value)}
                   />
                 </div>
-                <div className="rounded-lg border bg-slate-50 p-8 text-center text-muted-foreground border-dashed h-[200px] flex items-center justify-center">
-                  {biliUrl ? "视频功能开发中 (暂仅支持文本)" : "等待输入链接..."}
+                <div className="rounded-lg border bg-slate-50 p-8 text-center text-muted-foreground border-dashed h-[200px] flex flex-col items-center justify-center gap-4">
+                  {isFetching ? (
+                    <>
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      <p>正在解析视频字幕...</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>{biliUrl ? "点击下方按钮获取内容" : "请输入有效的 B站 视频链接"}</p>
+                      {biliUrl && (
+                        <Button variant="secondary" onClick={handleFetchBilibili} disabled={isFetching}>
+                          <Download className="mr-2 h-4 w-4" />
+                          解析并导入内容
+                        </Button>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </TabsContent>
@@ -67,16 +131,17 @@ export function ContentInput({ content, setContent, onGenerate, isGenerating }: 
         <Button 
           className="w-full gap-2" 
           size="lg"
-          onClick={onGenerate}
-          disabled={!content || isGenerating}
+          onClick={inputType === 'bilibili' ? handleFetchBilibili : onGenerate}
+          disabled={isButtonDisabled() || isFetching}
         >
-          {isGenerating ? (
+          {isGenerating || isFetching ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" /> 正在转换...
+              <Loader2 className="h-4 w-4 animate-spin" /> {isFetching ? '正在解析...' : '正在转换...'}
             </>
           ) : (
             <>
-              <Sparkles className="h-4 w-4" /> 开始转换
+              {inputType === 'bilibili' ? <Download className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
+              {inputType === 'bilibili' ? '获取内容' : '开始转换'}
             </>
           )}
         </Button>

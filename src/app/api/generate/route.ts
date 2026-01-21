@@ -1,17 +1,46 @@
 import { streamText } from 'ai';
 import { deepseek } from '@ai-sdk/deepseek';
+import { getBilibiliSubtitles } from '@/lib/bilibili';
 
-export const maxDuration = 30;
+export const maxDuration = 60; // Increase timeout for fetching subtitles
 
 export async function POST(req: Request) {
   try {
-    const { prompt, platform } = await req.json();
+    const { prompt, platform, biliUrl } = await req.json();
 
     if (!process.env.DEEPSEEK_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'DEEPSEEK_API_KEY is not configured' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    let finalPrompt = prompt;
+
+    // If Bilibili URL is provided, fetch subtitles
+    if (biliUrl) {
+      try {
+        const videoContent = await getBilibiliSubtitles(biliUrl);
+        
+        // Log subtitle status for debugging
+        const hasTranscript = videoContent.includes("Transcript:");
+        const contentLength = videoContent.length;
+        console.log(`[Bilibili] URL: ${biliUrl}`);
+        console.log(`[Bilibili] Content Length: ${contentLength} chars`);
+        console.log(`[Bilibili] Has Transcript: ${hasTranscript ? '✅ YES' : '❌ NO (Using Title/Desc only)'}`);
+
+        finalPrompt = `Here is the content of a Bilibili video (Title, Description, and Subtitles).
+        
+        **Important Note:** The subtitles provided below might be in English (machine translated) even if the video is in Chinese. Please ignore the language of the subtitles and focus on the *meaning* and *content*. If the subtitles are in English, treat them as a translation of the original Chinese speech.
+        
+        \n\n${videoContent}\n\nPlease use this content to generate the output.`;
+      } catch (error) {
+        console.error('Failed to fetch Bilibili content:', error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to fetch Bilibili video content. Please check the URL.' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     let systemPrompt = "You are a professional social media content creator and copywriter expert. Always use proper Markdown formatting for better readability.";
@@ -144,7 +173,7 @@ export async function POST(req: Request) {
     const result = streamText({
       model: deepseek('deepseek-chat'),
       system: systemPrompt,
-      prompt: prompt,
+      prompt: finalPrompt,
       temperature: 0.7, // 适中的创造力
     });
 
