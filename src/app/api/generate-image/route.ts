@@ -30,11 +30,11 @@ export async function POST(req: Request) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a professional art director. Extract key visual elements from the text to create a prompt for an AI image generator (CogView-4). Output ONLY the prompt in English. Keep it concise, descriptive, high quality, and suitable for the platform style.' 
+            content: '你是一位专业的艺术总监。请从文本中提取关键的视觉元素，为 AI 绘画模型 (CogView-4) 创作一句提示词。请直接输出提示词，不要包含其他内容。提示词应简洁、画面感强、高质量，并符合目标平台的风格调性。请使用中文。' 
           },
           { 
             role: 'user', 
-            content: `Platform: ${platform}\nText: ${content.substring(0, 2000)}` 
+            content: `平台: ${platform}\n文本内容: ${content.substring(0, 2000)}` 
           }
         ],
         temperature: 0.7

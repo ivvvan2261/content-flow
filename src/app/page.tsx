@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { ContentInput } from "@/components/content-input";
+import Link from "next/link";
 import { ContentOutput } from "@/components/content-output";
 import { useState } from "react";
 import { useCompletion } from "@ai-sdk/react";
@@ -48,7 +50,19 @@ export default function Home() {
             </div>
             <h1 className="text-xl font-bold tracking-tight">ContentFlow</h1>
           </div>
-          <Button variant="outline" size="sm">登录 / 注册</Button>
+          <div className="flex items-center gap-4">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="outline" size="sm">登录 / 注册</Button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <Link href="/history">
+                <Button variant="ghost" size="sm" className="mr-2">历史记录</Button>
+              </Link>
+              <UserButton />
+            </SignedIn>
+          </div>
         </div>
       </header>
 

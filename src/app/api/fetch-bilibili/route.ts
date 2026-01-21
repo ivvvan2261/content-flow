@@ -9,19 +9,17 @@ export async function POST(req: NextRequest) {
     const { url } = await req.json();
 
     if (!url) {
-      return NextResponse.json({ error: 'URL is required' }, { status: 400 });
+      return NextResponse.json({ error: '请输入视频链接' }, { status: 400 });
     }
 
     const videoContent = await getBilibiliSubtitles(url);
-    
-    return NextResponse.json({ content: videoContent });
     
     return NextResponse.json({ content: videoContent });
 
   } catch (error) {
     console.error('Fetch Bilibili Error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch video content' },
+      { error: error instanceof Error ? error.message : '获取视频内容失败，请检查链接是否有效' },
       { status: 500 }
     );
   }

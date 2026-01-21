@@ -1,16 +1,19 @@
 import { streamText } from 'ai';
 import { deepseek } from '@ai-sdk/deepseek';
 import { getBilibiliSubtitles } from '@/lib/bilibili';
+import { auth } from '@clerk/nextjs/server';
+import db from '@/lib/db';
 
 export const maxDuration = 60; // Increase timeout for fetching subtitles
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
     const { prompt, platform, biliUrl } = await req.json();
 
     if (!process.env.DEEPSEEK_API_KEY) {
       return new Response(
-        JSON.stringify({ error: 'DEEPSEEK_API_KEY is not configured' }),
+        JSON.stringify({ error: '未配置 DEEPSEEK_API_KEY' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -37,7 +40,7 @@ export async function POST(req: Request) {
       } catch (error) {
         console.error('Failed to fetch Bilibili content:', error);
         return new Response(
-          JSON.stringify({ error: 'Failed to fetch Bilibili video content. Please check the URL.' }),
+          JSON.stringify({ error: '获取 B站 视频内容失败，请检查链接是否有效。' }),
           { status: 400, headers: { 'Content-Type': 'application/json' } }
         );
       }
@@ -175,6 +178,22 @@ export async function POST(req: Request) {
       system: systemPrompt,
       prompt: finalPrompt,
       temperature: 0.7, // 适中的创造力
+      onFinish: async ({ text }) => {
+        if (userId && text) {
+          try {
+            await db.generationHistory.create({
+              data: {
+                userId,
+                originalContent: biliUrl ? `[Bilibili] ${biliUrl}` : (prompt || "No content provided"),
+                generatedContent: text,
+                platform,
+              },
+            });
+          } catch (error) {
+            console.error('Failed to save history:', error);
+          }
+        }
+      },
     });
 
     return result.toTextStreamResponse();
