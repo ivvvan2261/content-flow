@@ -9,7 +9,7 @@ import { useCompletion } from "@ai-sdk/react";
 
 export default function Home() {
   const [inputContent, setInputContent] = useState("");
-  const [platform, setPlatform] = useState("twitter");
+  const [platform, setPlatform] = useState("xiaohongshu");
   
   const { completion, complete, isLoading } = useCompletion({
     api: '/api/generate',
@@ -54,7 +54,7 @@ export default function Home() {
           <section className="flex flex-col gap-4 h-full">
             <div className="space-y-1 shrink-0">
               <h2 className="text-2xl font-semibold tracking-tight">输入素材</h2>
-              <p className="text-muted-foreground">粘贴文章内容或 YouTube 视频链接。</p>
+              <p className="text-muted-foreground">粘贴文章内容或 B站 视频链接。</p>
             </div>
             <ContentInput 
               content={inputContent} 

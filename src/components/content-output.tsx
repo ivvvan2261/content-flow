@@ -35,9 +35,10 @@ export function ContentOutput({ content, isLoading, platform, setPlatform, onReg
       <Tabs value={platform} onValueChange={setPlatform} className="flex-1 flex flex-col h-full">
         <div className="px-6 pt-6">
           <TabsList>
-            <TabsTrigger value="twitter">Twitter / 微博</TabsTrigger>
             <TabsTrigger value="xiaohongshu">小红书</TabsTrigger>
-            <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
+            <TabsTrigger value="zhihu">知乎文章</TabsTrigger>
+            <TabsTrigger value="weibo">微博</TabsTrigger>
+            <TabsTrigger value="wechat">公众号</TabsTrigger>
           </TabsList>
         </div>
 
@@ -64,7 +65,7 @@ export function ContentOutput({ content, isLoading, platform, setPlatform, onReg
             </div>
           ) : (
             <div className="h-full rounded-md border bg-background p-4 text-sm text-muted-foreground flex items-center justify-center">
-              点击左侧“开始转换”生成 {platform === 'twitter' ? '推文' : platform === 'xiaohongshu' ? '小红书笔记' : '领英动态'}...
+              点击左侧“开始转换”生成 {platform === 'xiaohongshu' ? '小红书笔记' : platform === 'zhihu' ? '知乎文章' : platform === 'weibo' ? '微博博文' : '公众号文章'}...
             </div>
           )}
         </div>

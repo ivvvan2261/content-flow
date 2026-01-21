@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Type, Youtube, Loader2 } from "lucide-react";
+import { Sparkles, Type, Video, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 interface ContentInputProps {
@@ -18,7 +18,7 @@ interface ContentInputProps {
 
 export function ContentInput({ content, setContent, onGenerate, isGenerating }: ContentInputProps) {
   const [inputType, setInputType] = useState("text");
-  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [biliUrl, setBiliUrl] = useState("");
 
   return (
     <Card className="flex-1 flex flex-col shadow-sm h-full">
@@ -28,8 +28,8 @@ export function ContentInput({ content, setContent, onGenerate, isGenerating }: 
             <TabsTrigger value="text" className="gap-2">
               <Type className="h-4 w-4" /> 文本 / 文章
             </TabsTrigger>
-            <TabsTrigger value="youtube" className="gap-2">
-              <Youtube className="h-4 w-4" /> YouTube 视频
+            <TabsTrigger value="bilibili" className="gap-2">
+              <Video className="h-4 w-4" /> B站 视频
             </TabsTrigger>
           </TabsList>
           
@@ -44,19 +44,19 @@ export function ContentInput({ content, setContent, onGenerate, isGenerating }: 
                 onChange={(e) => setContent(e.target.value)}
               />
             </TabsContent>
-            <TabsContent value="youtube" className="mt-0">
+            <TabsContent value="bilibili" className="mt-0">
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="url">YouTube 链接</Label>
+                  <Label htmlFor="url">B站 链接</Label>
                   <Input 
                     id="url" 
-                    placeholder="https://www.youtube.com/watch?v=..." 
-                    value={youtubeUrl}
-                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    placeholder="https://www.bilibili.com/video/BV..." 
+                    value={biliUrl}
+                    onChange={(e) => setBiliUrl(e.target.value)}
                   />
                 </div>
                 <div className="rounded-lg border bg-slate-50 p-8 text-center text-muted-foreground border-dashed h-[200px] flex items-center justify-center">
-                  {youtubeUrl ? "视频功能开发中 (暂仅支持文本)" : "等待输入链接..."}
+                  {biliUrl ? "视频功能开发中 (暂仅支持文本)" : "等待输入链接..."}
                 </div>
               </div>
             </TabsContent>
