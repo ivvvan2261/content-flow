@@ -68,8 +68,8 @@ export function ContentOutput({ content, isLoading, platform, setPlatform, onReg
   return (
     <Card className="flex-1 flex flex-col shadow-sm bg-slate-50/50 dark:bg-slate-900/50 border-dashed h-full overflow-hidden">
       <Tabs value={platform} onValueChange={setPlatform} className="flex-1 flex flex-col h-full">
-        <div className="px-6 pt-6">
-          <TabsList>
+        <div className="px-4 py-4 sm:px-6 sm:pt-6">
+          <TabsList className="grid w-full grid-cols-2 h-auto sm:grid-cols-4">
             <TabsTrigger value="xiaohongshu">小红书</TabsTrigger>
             <TabsTrigger value="zhihu">知乎文章</TabsTrigger>
             <TabsTrigger value="weibo">微博</TabsTrigger>
@@ -134,16 +134,16 @@ export function ContentOutput({ content, isLoading, platform, setPlatform, onReg
           )}
         </div>
         
-        <CardFooter className="border-t p-4 flex justify-between bg-white dark:bg-slate-950 rounded-b-xl shrink-0">
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" className="gap-2" onClick={onRegenerate} disabled={isLoading}>
+        <CardFooter className="border-t p-4 flex flex-col sm:flex-row gap-3 justify-between bg-white dark:bg-slate-950 rounded-b-xl shrink-0">
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button variant="ghost" size="sm" className="gap-2 flex-1 sm:flex-none" onClick={onRegenerate} disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} /> 
               {isLoading ? '生成中...' : '重新生成'}
             </Button>
             <Button 
               variant="outline" 
               size="sm" 
-              className="gap-2" 
+              className="gap-2 flex-1 sm:flex-none" 
               onClick={handleGenerateImage} 
               disabled={isLoading || !content || isGeneratingImage}
             >
@@ -154,7 +154,7 @@ export function ContentOutput({ content, isLoading, platform, setPlatform, onReg
           <Button 
             variant="secondary" 
             size="sm" 
-            className="gap-2" 
+            className="gap-2 w-full sm:w-auto" 
             onClick={copyToClipboard} 
             disabled={!content || isLoading}
           >
