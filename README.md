@@ -130,6 +130,10 @@ content-flow/
 - [x] **AI 智能配图**: 根据目标平台自动生成适配比例与风格的封面图 (CogView-4)
 - [x] **用户系统**: 保存生成历史，通过 Supabase/Clerk 实现登录
 - [x] **SEO 优化**: 增加响应式着陆页 (Landing Page)
+- [ ] **用户付费体系**: 
+    - [ ] 新用户免费试用额度 (Credits)
+    - [ ] 会员订阅系统 (Monthly Subscription)
+    - [ ] 接入支付网关 (推荐接入 **面包多**，适合个人开发者无照支持微信/支付宝)
 - [ ] **多模型支持**: 已支持 DeepSeek V3，计划接入 Claude 3.5 Sonnet / GPT-4o
 - [ ] **多格式导出**: 支持导出为 Markdown、PDF 或直接生成长图
 

@@ -9,6 +9,7 @@ import { ContentOutput } from "@/components/content-output";
 import { useState } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import { toast } from "sonner";
+import { CreditDisplay } from "@/components/credit-display";
 
 export default function GeneratePage() {
   const [inputContent, setInputContent] = useState("");
@@ -21,6 +22,13 @@ export default function GeneratePage() {
   const { completion, complete, isLoading } = useCompletion({
     api: '/api/generate',
     streamProtocol: 'text',
+    onError: (error) => {
+      if (error.message.includes('402') || error.message.includes('积分不足')) {
+        toast.error("积分不足，请充值后继续使用");
+      } else {
+        toast.error("生成失败，请稍后重试");
+      }
+    }
   });
 
   const handleGenerate = () => {
@@ -66,6 +74,7 @@ export default function GeneratePage() {
               </SignInButton>
             </SignedOut>
             <SignedIn>
+              <CreditDisplay />
               <Link href="/history">
                 <Button variant="ghost" size="sm" className="mr-2">历史记录</Button>
               </Link>

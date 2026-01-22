@@ -3,6 +3,7 @@ import { deepseek } from '@ai-sdk/deepseek';
 import { getBilibiliSubtitles } from '@/lib/bilibili';
 import { auth } from '@clerk/nextjs/server';
 import db from '@/lib/db';
+import { getUserCredits, deductCredit } from '@/lib/credits';
 
 export const maxDuration = 60; // Increase timeout for fetching subtitles
 
@@ -10,6 +11,22 @@ export async function POST(req: Request) {
   try {
     const { userId } = await auth();
     const { prompt, platform, biliUrl } = await req.json();
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check credits
+    const userCredits = await getUserCredits(userId);
+    if (userCredits.balance <= 0) {
+      return new Response(
+        JSON.stringify({ error: '积分不足，请充值' }),
+        { status: 402, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     if (!process.env.DEEPSEEK_API_KEY) {
       return new Response(
@@ -181,6 +198,9 @@ export async function POST(req: Request) {
       onFinish: async ({ text }) => {
         if (userId && text) {
           try {
+            // Deduct credit
+            await deductCredit(userId, 1);
+
             await db.generationHistory.create({
               data: {
                 userId,
@@ -190,7 +210,7 @@ export async function POST(req: Request) {
               },
             });
           } catch (error) {
-            console.error('Failed to save history:', error);
+            console.error('Failed to save history or deduct credit:', error);
           }
         }
       },

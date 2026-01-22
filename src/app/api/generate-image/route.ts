@@ -1,7 +1,20 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { getUserCredits, deductCredit } from '@/lib/credits';
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Check credits
+    const userCredits = await getUserCredits(userId);
+    if (userCredits.balance <= 0) {
+      return NextResponse.json({ error: '积分不足，请充值' }, { status: 402 });
+    }
+
     const { content, platform } = await req.json();
 
     if (!process.env.ZHIPU_API_KEY) {
@@ -77,6 +90,13 @@ export async function POST(req: Request) {
     if (imageData.error) {
       console.error('CogView error:', imageData.error);
       return NextResponse.json({ error: imageData.error.message }, { status: 500 });
+    }
+
+    // Deduct credit after successful generation
+    try {
+      await deductCredit(userId, 1);
+    } catch (error) {
+      console.error('Failed to deduct credit:', error);
     }
 
     return NextResponse.json({ url: imageData.data[0].url, prompt: imagePrompt });

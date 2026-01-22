@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "一键将您的内容重组为小红书、知乎、微博和公众号风格，提升内容创作效率。",
 };
 
+import { HeroTitle } from "@/components/hero-title";
+
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -38,9 +40,7 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="py-20 px-6 text-center space-y-8 max-w-5xl mx-auto">
            <div className="space-y-4">
-             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 leading-tight pb-2">
-               让好内容在每一个平台<br/>都能发光
-             </h1>
+             <HeroTitle />
              <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                ContentFlow 帮助你将一篇文章智能重组为小红书、知乎、微博和公众号的原生风格。一次创作，多处传播。
              </p>
