@@ -5,7 +5,7 @@ import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils"; // Assuming cn utility exists, if not I will use clsx/tailwind-merge directly or import locally
 
 export function HeroTitle() {
-  const text = "让好内容在每一个平台\n都能发光";
+  const text = "让好内容在每个平台\n都能发光";
   const lines = text.split("\n");
 
   const container: Variants = {
