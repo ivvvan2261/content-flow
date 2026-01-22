@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils"; // Assuming cn utility exists, if not I will use clsx/tailwind-merge directly or import locally
 
@@ -8,7 +8,7 @@ export function HeroTitle() {
   const text = "让好内容在每一个平台\n都能发光";
   const lines = text.split("\n");
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     visible: (i = 1) => ({
       opacity: 1,
@@ -16,7 +16,7 @@ export function HeroTitle() {
     }),
   };
 
-  const child = {
+  const child: Variants = {
     visible: {
       opacity: 1,
       y: 0,
@@ -114,7 +114,6 @@ export function HeroTitle() {
                     }}
                     animate={{ 
                       maskPosition: ["250% 0", "-150% 0"],
-                      WebkitMaskPosition: ["250% 0", "-150% 0"]
                     }}
                     transition={{
                       duration: 1.5,
