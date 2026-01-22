@@ -28,7 +28,7 @@ export default function LandingPage() {
           </SignedIn>
           <SignedOut>
              <SignInButton mode="modal" forceRedirectUrl="/generate">
-                <Button variant="ghost">登录</Button>
+                <Button variant="ghost">登录 / 注册</Button>
              </SignInButton>
           </SignedOut>
         </nav>
