@@ -1,118 +1,120 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
-import { SignInButton, SignedIn, SignedOut, UserButton, useAuth, useClerk } from "@clerk/nextjs";
-import { ContentInput } from "@/components/content-input";
 import Link from "next/link";
-import { ContentOutput } from "@/components/content-output";
-import { useState } from "react";
-import { useCompletion } from "@ai-sdk/react";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Sparkles, PenTool, Share2, Zap, Layout } from "lucide-react";
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { Metadata } from "next";
 
-export default function Home() {
-  const [inputContent, setInputContent] = useState("");
-  const [biliUrl, setBiliUrl] = useState("");
-  const [inputType, setInputType] = useState("text");
-  const [platform, setPlatform] = useState("xiaohongshu");
-  const { userId } = useAuth();
-  const { openSignIn } = useClerk();
-  
-  const { completion, complete, isLoading } = useCompletion({
-    api: '/api/generate',
-    streamProtocol: 'text',
-  });
+export const metadata: Metadata = {
+  title: "ContentFlow - AI 驱动的内容多平台分发工具",
+  description: "一键将您的内容重组为小红书、知乎、微博和公众号风格，提升内容创作效率。",
+};
 
-  const handleGenerate = () => {
-    if (!userId) {
-      toast.error("请先登录再使用生成功能");
-      openSignIn();
-      return;
-    }
-
-    if (inputType === 'text') {
-      if (!inputContent) return;
-      complete(inputContent, {
-        body: { platform }
-      });
-    } else {
-      if (!biliUrl) return;
-      // Send empty prompt for bili, backend uses biliUrl
-      complete('', {
-        body: { platform, biliUrl }
-      });
-    }
-  };
-
-  const handlePlatformChange = (newPlatform: string) => {
-    setPlatform(newPlatform);
-  };
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
-      {/* Navbar */}
-      <header className="border-b bg-white dark:bg-slate-900 px-6 py-4 sticky top-0 z-10 shrink-0">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary p-2 rounded-lg">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
+      {/* Header */}
+      <header className="px-6 py-4 flex items-center justify-between border-b bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+           <div className="bg-primary p-2 rounded-lg">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight">ContentFlow</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button variant="outline" size="sm">登录 / 注册</Button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <Link href="/history">
-                <Button variant="ghost" size="sm" className="mr-2">历史记录</Button>
-              </Link>
-              <UserButton />
-            </SignedIn>
-          </div>
+          <span className="font-bold text-xl tracking-tight">ContentFlow</span>
         </div>
+        <nav className="flex items-center gap-4">
+          <SignedIn>
+            <Link href="/generate">
+              <Button>进入应用</Button>
+            </Link>
+          </SignedIn>
+          <SignedOut>
+             <SignInButton mode="modal" forceRedirectUrl="/generate">
+                <Button variant="ghost">登录</Button>
+             </SignInButton>
+            <SignInButton mode="modal" forceRedirectUrl="/generate">
+              <Button>免费开始</Button>
+            </SignInButton>
+          </SignedOut>
+        </nav>
       </header>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full min-h-[600px]">
-          
-          {/* Left Column: Input */}
-          <section className="flex flex-col gap-4 h-full">
-            <div className="space-y-1 shrink-0">
-              <h2 className="text-2xl font-semibold tracking-tight">输入素材</h2>
-              <p className="text-muted-foreground">粘贴文章内容或 B站 视频链接。</p>
-            </div>
-            <ContentInput 
-              content={inputContent} 
-              setContent={setInputContent}
-              biliUrl={biliUrl}
-              setBiliUrl={setBiliUrl}
-              inputType={inputType}
-              setInputType={setInputType}
-              onGenerate={handleGenerate}
-              isGenerating={isLoading}
-            />
-          </section>
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="py-20 px-6 text-center space-y-8 max-w-5xl mx-auto">
+           <div className="space-y-4">
+             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 leading-tight pb-2">
+               让好内容在每一个平台<br/>都能发光
+             </h1>
+             <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+               ContentFlow 帮助你将一篇文章智能重组为小红书、知乎、微博和公众号的原生风格。一次创作，多处传播。
+             </p>
+           </div>
+           
+           <div className="flex justify-center gap-4 pt-4">
+             <SignedOut>
+                <SignInButton mode="modal" forceRedirectUrl="/generate">
+                  <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
+                </SignInButton>
+             </SignedOut>
+             <SignedIn>
+                <Link href="/generate">
+                  <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
+                </Link>
+             </SignedIn>
+           </div>
+        </section>
 
-          {/* Right Column: Output */}
-          <section className="flex flex-col gap-4 h-full">
-            <div className="space-y-1 shrink-0">
-              <h2 className="text-2xl font-semibold tracking-tight">生成结果</h2>
-              <p className="text-muted-foreground">AI 已为您重写为不同平台的风格。</p>
-            </div>
-            <ContentOutput 
-              content={completion}
-              isLoading={isLoading}
-              platform={platform}
-              setPlatform={handlePlatformChange}
-              onRegenerate={handleGenerate}
-            />
-          </section>
-
-        </div>
+        {/* Features Grid */}
+        <section className="py-20 px-6 bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800">
+           <div className="max-w-6xl mx-auto">
+             <h2 className="text-3xl font-bold text-center mb-16 tracking-tight">专为中文内容创作者打造</h2>
+             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+               <FeatureCard 
+                 icon={<PenTool className="w-6 h-6" />}
+                 title="多平台风格"
+                 description="精准把握小红书种草感、知乎专业风、微博话题性及公众号的深度排版。"
+               />
+               <FeatureCard 
+                 icon={<Zap className="w-6 h-6" />}
+                 title="AI 极速生成"
+                 description="基于 DeepSeek V3 大模型，流式输出，让灵感无需等待。"
+               />
+               <FeatureCard 
+                 icon={<Layout className="w-6 h-6" />}
+                 title="B站 视频转文案"
+                 description="直接粘贴视频链接，自动提取字幕并转化为高质量图文内容。"
+               />
+               <FeatureCard 
+                 icon={<Share2 className="w-6 h-6" />}
+                 title="历史回溯"
+                 description="自动保存每一次生成记录，方便随时回顾与二次编辑。"
+               />
+             </div>
+           </div>
+        </section>
       </main>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-slate-500 bg-slate-50 dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p>© 2026 ContentFlow. All rights reserved.</p>
+          <div className="flex gap-6 text-sm">
+            <Link href="#" className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">隐私政策</Link>
+            <Link href="#" className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">服务条款</Link>
+          </div>
+        </div>
+      </footer>
     </div>
-  );
+  )
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+  return (
+    <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow duration-300">
+      <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
+        {icon}
+      </div>
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">{description}</p>
+    </div>
+  )
 }
