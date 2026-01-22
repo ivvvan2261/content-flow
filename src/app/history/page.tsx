@@ -1,8 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import db from "@/lib/db";
-import { format } from "date-fns";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { HistoryItem } from "@/components/history-item";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -42,36 +41,7 @@ export default async function HistoryPage() {
             </div>
           ) : (
             history.map((item) => (
-              <Card key={item.id}>
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <div className="font-medium capitalize bg-primary/10 text-primary px-2 py-0.5 rounded text-sm inline-block">
-                      {item.platform}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {format(item.createdAt, "yyyy-MM-dd HH:mm")}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="text-sm font-medium text-muted-foreground mb-1">
-                      输入内容
-                    </div>
-                    <div className="text-sm line-clamp-2 bg-muted p-2 rounded-md break-all">
-                      {item.originalContent}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-muted-foreground mb-1">
-                      生成结果
-                    </div>
-                    <div className="text-sm line-clamp-3 whitespace-pre-wrap break-all">
-                      {item.generatedContent}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <HistoryItem key={item.id} item={item} />
             ))
           )}
         </div>

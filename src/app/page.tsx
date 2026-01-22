@@ -30,9 +30,6 @@ export default function LandingPage() {
              <SignInButton mode="modal" forceRedirectUrl="/generate">
                 <Button variant="ghost">登录</Button>
              </SignInButton>
-            <SignInButton mode="modal" forceRedirectUrl="/generate">
-              <Button>免费开始</Button>
-            </SignInButton>
           </SignedOut>
         </nav>
       </header>
