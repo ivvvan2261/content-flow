@@ -1,5 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
-import { zhCN } from "@clerk/localizations";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
@@ -30,10 +28,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClerkProvider localization={zhCN}>
-          {children}
-          <Toaster />
-        </ClerkProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

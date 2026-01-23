@@ -1,23 +1,25 @@
 import { streamText } from 'ai';
 import { deepseek } from '@ai-sdk/deepseek';
 import { getBilibiliSubtitles } from '@/lib/bilibili';
-import { auth } from '@clerk/nextjs/server';
+import { logtoClient } from '@/lib/logto';
 import db from '@/lib/db';
 import { getUserCredits, deductCredit } from '@/lib/credits';
+import { NextRequest } from 'next/server';
 
 export const maxDuration = 60; // Increase timeout for fetching subtitles
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    const { prompt, platform, biliUrl } = await req.json();
+    const { isAuthenticated, claims } = await logtoClient.getLogtoContext(request);
+    const { prompt, platform, biliUrl } = await request.json();
 
-    if (!userId) {
+    if (!isAuthenticated || !claims?.sub) {
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
+    const userId = claims.sub;
 
     // Check credits
     const userCredits = await getUserCredits(userId);

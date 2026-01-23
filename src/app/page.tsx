@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sparkles, PenTool, Share2, Zap, Layout } from "lucide-react";
-import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Metadata } from "next";
+import { logtoClient } from '@/lib/logto';
+import { headers } from 'next/headers';
+import { NextRequest } from 'next/server';
 
 export const metadata: Metadata = {
   title: "ContentFlow - AI 驱动的内容多平台分发工具",
@@ -11,7 +13,12 @@ export const metadata: Metadata = {
 
 import { HeroTitle } from "@/components/hero-title";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const request = new NextRequest(new URL(process.env.LOGTO_BASE_URL!), {
+    headers: await headers(),
+  });
+  const { isAuthenticated } = await logtoClient.getLogtoContext(request);
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Header */}
@@ -23,16 +30,15 @@ export default function LandingPage() {
           <span className="font-bold text-xl tracking-tight">ContentFlow</span>
         </div>
         <nav className="flex items-center gap-4">
-          <SignedIn>
+          {isAuthenticated ? (
             <Link href="/generate">
               <Button>进入应用</Button>
             </Link>
-          </SignedIn>
-          <SignedOut>
-             <SignInButton mode="modal" forceRedirectUrl="/generate">
-                <Button variant="ghost">登录 / 注册</Button>
-             </SignInButton>
-          </SignedOut>
+          ) : (
+            <Link href="/api/logto/sign-in">
+              <Button variant="ghost">登录 / 注册</Button>
+            </Link>
+          )}
         </nav>
       </header>
 
@@ -47,16 +53,15 @@ export default function LandingPage() {
            </div>
            
            <div className="flex justify-center gap-4 pt-4">
-             <SignedOut>
-                <SignInButton mode="modal" forceRedirectUrl="/generate">
-                  <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
-                </SignInButton>
-             </SignedOut>
-             <SignedIn>
+             {isAuthenticated ? (
                 <Link href="/generate">
                   <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
                 </Link>
-             </SignedIn>
+             ) : (
+                <Link href="/api/logto/sign-in">
+                  <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
+                </Link>
+             )}
            </div>
         </section>
 

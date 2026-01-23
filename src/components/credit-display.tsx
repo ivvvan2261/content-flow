@@ -4,11 +4,16 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Coins, Plus } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
 
 export function CreditDisplay() {
   const [credits, setCredits] = useState<number | null>(null);
-  const { userId } = useAuth();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/me')
+      .then(res => res.json())
+      .then(data => setUserId(data.userId));
+  }, []);
 
   const fetchCredits = () => {
     if (!userId) return;

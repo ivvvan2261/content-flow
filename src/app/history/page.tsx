@@ -1,17 +1,25 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import db from "@/lib/db";
 import { HistoryItem } from "@/components/history-item";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { logtoClient } from '@/lib/logto';
+import { cookies, headers } from 'next/headers';
+import { NextRequest } from 'next/server';
 
 export default async function HistoryPage() {
-  const { userId } = await auth();
+  const request = new NextRequest(new URL(process.env.LOGTO_BASE_URL!), {
+    headers: await headers(),
+  });
+  
+  const { isAuthenticated, claims } = await logtoClient.getLogtoContext(request);
 
-  if (!userId) {
-    redirect("/");
+  if (!isAuthenticated || !claims?.sub) {
+    redirect("/api/logto/sign-in");
   }
+
+  const userId = claims.sub;
 
   const history = await db.generationHistory.findMany({
     where: {

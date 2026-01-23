@@ -1,12 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Sparkles, History } from "lucide-react";
-import { SignInButton, SignedIn, SignedOut, UserButton, useAuth, useClerk } from "@clerk/nextjs";
+import { Sparkles, History, LogOut } from "lucide-react";
 import { ContentInput } from "@/components/content-input";
 import Link from "next/link";
 import { ContentOutput } from "@/components/content-output";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import { toast } from "sonner";
 import { CreditDisplay } from "@/components/credit-display";
@@ -16,8 +15,13 @@ export default function GeneratePage() {
   const [biliUrl, setBiliUrl] = useState("");
   const [inputType, setInputType] = useState("text");
   const [platform, setPlatform] = useState("xiaohongshu");
-  const { userId } = useAuth();
-  const { openSignIn } = useClerk();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/me')
+      .then(res => res.json())
+      .then(data => setUserId(data.userId));
+  }, []);
   
   const { completion, complete, isLoading } = useCompletion({
     api: '/api/generate',
@@ -34,7 +38,7 @@ export default function GeneratePage() {
   const handleGenerate = () => {
     if (!userId) {
       toast.error("请先登录再使用生成功能");
-      openSignIn();
+      window.location.href = '/api/logto/sign-in';
       return;
     }
 
@@ -68,21 +72,26 @@ export default function GeneratePage() {
             <h1 className="text-lg md:text-xl font-bold tracking-tight">ContentFlow</h1>
           </Link>
           <div className="flex items-center gap-2 md:gap-4">
-            <SignedOut>
-              <SignInButton mode="modal">
+            {!userId ? (
+              <Link href="/api/logto/sign-in">
                 <Button variant="outline" size="sm">登录 / 注册</Button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <CreditDisplay />
-              <Link href="/history">
-                <Button variant="ghost" size="sm" className="px-2 md:px-3">
-                  <History className="h-4 w-4 md:mr-2" />
-                  <span className="hidden md:inline">历史记录</span>
-                </Button>
               </Link>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            ) : (
+              <>
+                <CreditDisplay />
+                <Link href="/history">
+                  <Button variant="ghost" size="sm" className="px-2 md:px-3">
+                    <History className="h-4 w-4 md:mr-2" />
+                    <span className="hidden md:inline">历史记录</span>
+                  </Button>
+                </Link>
+                <Link href="/api/logto/sign-out">
+                  <Button variant="ghost" size="icon" title="退出登录">
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>

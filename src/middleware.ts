@@ -1,10 +1,28 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { logtoClient } from './lib/logto';
 
-const isProtectedRoute = createRouteMatcher(['/generate(.*)', '/history(.*)', '/api/generate(.*)']);
+const protectedRoutes = ['/generate', '/history', '/api/generate'];
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect();
-});
+export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+  if (isProtectedRoute) {
+    const { isAuthenticated } = await logtoClient.getLogtoContext(request);
+
+    if (!isAuthenticated) {
+      if (pathname.startsWith('/api/')) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      
+      const signInUrl = new URL('/api/logto/sign-in', request.url);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [

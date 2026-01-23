@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logtoClient } from '@/lib/logto';
-import { getUserCredits } from '@/lib/credits';
 
 export async function GET(request: NextRequest) {
   const { isAuthenticated, claims } = await logtoClient.getLogtoContext(request);
   
   if (!isAuthenticated || !claims?.sub) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ userId: null });
   }
   
-  const credits = await getUserCredits(claims.sub);
-  return NextResponse.json(credits);
+  return NextResponse.json({ userId: claims.sub });
 }

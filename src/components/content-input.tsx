@@ -7,9 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Type, Video, Loader2, Download } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { useAuth, useClerk } from "@clerk/nextjs";
 
 interface ContentInputProps {
   content: string;
@@ -33,13 +32,18 @@ export function ContentInput({
   isGenerating 
 }: ContentInputProps) {
   const [isFetching, setIsFetching] = useState(false);
-  const { userId } = useAuth();
-  const { openSignIn } = useClerk();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/me')
+      .then(res => res.json())
+      .then(data => setUserId(data.userId));
+  }, []);
 
   const handleFetchBilibili = async () => {
     if (!userId) {
       toast.error("请先登录再使用解析功能");
-      openSignIn();
+      window.location.href = '/api/logto/sign-in';
       return;
     }
 

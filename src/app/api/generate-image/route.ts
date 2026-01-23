@@ -1,13 +1,14 @@
-import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { logtoClient } from '@/lib/logto';
 import { getUserCredits, deductCredit } from '@/lib/credits';
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
+    const { isAuthenticated, claims } = await logtoClient.getLogtoContext(request);
+    if (!isAuthenticated || !claims?.sub) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const userId = claims.sub;
 
     // Check credits
     const userCredits = await getUserCredits(userId);
