@@ -1,0 +1,9 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="128" fill="#111111"/>
+  <!-- Sparkle Outline -->
+  <path d="M256 140C256 210 210 256 140 256C210 256 256 302 256 372C256 302 302 256 372 256C302 256 256 210 256 140Z" stroke="white" stroke-width="40" stroke-linejoin="round"/>
+  <!-- Plus Sign -->
+  <path d="M380 140H440M410 110V170" stroke="white" stroke-width="40" stroke-linecap="round"/>
+  <!-- Dot -->
+  <circle cx="140" cy="372" r="30" fill="white"/>
+</svg>

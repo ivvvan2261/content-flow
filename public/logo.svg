@@ -1,0 +1,12 @@
+<svg width="1220" height="320" viewBox="0 0 1220 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon Part -->
+  <g transform="translate(40, 40) scale(0.46875)">
+    <rect width="512" height="512" rx="128" fill="#111111"/>
+    <path d="M256 140C256 210 210 256 140 256C210 256 256 302 256 372C256 302 302 256 372 256C302 256 256 210 256 140Z" stroke="white" stroke-width="40" stroke-linejoin="round"/>
+    <path d="M380 140H440M410 110V170" stroke="white" stroke-width="40" stroke-linecap="round"/>
+    <circle cx="140" cy="372" r="30" fill="white"/>
+  </g>
+  
+  <!-- Text Part -->
+  <text x="310" y="215" fill="#111111" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 155px; font-weight: 800; letter-spacing: -6px;">ContentFlow</text>
+</svg>
