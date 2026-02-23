@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Coins, Plus } from "lucide-react";
-import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
+import { PaymentDialog } from "@/components/payment-dialog";
 
 export function CreditDisplay() {
   const [credits, setCredits] = useState<number | null>(null);
@@ -39,11 +39,11 @@ export function CreditDisplay() {
         <Coins className="h-3.5 w-3.5 md:h-4 md:w-4 text-yellow-500" />
         <span>{credits}</span>
       </div>
-      <Link href="https://mbd.pub/o/bread/mbd-link" target="_blank" title="充值积分">
+      <PaymentDialog onSuccess={fetchCredits}>
         <Button variant="ghost" size="icon" className="h-4 w-4 md:h-5 md:w-5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700">
           <Plus className="h-2.5 w-2.5 md:h-3 md:w-3" />
         </Button>
-      </Link>
+      </PaymentDialog>
     </div>
   );
 }

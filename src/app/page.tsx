@@ -5,7 +5,7 @@ import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ContentFlow - AI 驱动的内容多平台分发工具",
+  title: "墨流 (ContentFlow) - AI 驱动的内容多平台分发工具",
   description: "一键将您的内容重组为小红书、知乎、微博和公众号风格，提升内容创作效率。",
 };
 
@@ -20,7 +20,7 @@ export default function LandingPage() {
            <div className="bg-primary p-2 rounded-lg">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
-          <span className="font-bold text-xl tracking-tight">ContentFlow</span>
+          <span className="font-bold text-xl tracking-tight">墨流</span>
         </div>
         <nav className="flex items-center gap-4">
           <SignedIn>
@@ -40,11 +40,11 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="py-20 px-6 text-center space-y-8 max-w-5xl mx-auto">
            <div className="space-y-4">
-             <HeroTitle />
-             <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-               ContentFlow 帮助你将一篇文章智能重组为小红书、知乎、微博和公众号的原生风格。一次创作，多处传播。
-             </p>
-           </div>
+         <HeroTitle />
+         <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+           墨流 (ContentFlow) 帮助你将一篇文章智能重组为小红书、知乎、微博和公众号的原生风格。一次创作，多处传播。
+         </p>
+       </div>
            
            <div className="flex justify-center gap-4 pt-4">
              <SignedOut>
@@ -93,7 +93,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="py-8 text-center text-slate-500 bg-slate-50 dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© 2026 ContentFlow. All rights reserved.</p>
+          <p>© 2026 墨流 (ContentFlow). All rights reserved.</p>
           <div className="flex gap-6 text-sm">
             <Link href="#" className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">隐私政策</Link>
             <Link href="#" className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">服务条款</Link>

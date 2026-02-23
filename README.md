@@ -1,6 +1,6 @@
-# ContentFlow 🚀
+# 墨流 (ContentFlow) 🚀
 
-ContentFlow 是一个面向内容创作者的 AI 辅助工具 (Micro-SaaS MVP)。它能帮助你将长文章、视频素材或创意灵感，一键重构为适用于 **微博**、**小红书**、**知乎** 和 **微信公众号** 等主流中文社区平台的原生风格文案。
+**墨流 (ContentFlow)** 是一个面向内容创作者的 AI 辅助工具 (Micro-SaaS MVP)。它能帮助你将长文章、视频素材或创意灵感，一键重构为适用于 **微博**、**小红书**、**知乎** 和 **微信公众号** 等主流中文社区平台的原生风格文案。
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8) ![DeepSeek](https://img.shields.io/badge/DeepSeek-V3-blue) ![Clerk](https://img.shields.io/badge/Clerk-Auth-6C47FF) ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
 
@@ -133,7 +133,7 @@ content-flow/
 - [ ] **用户付费体系**: 
     - [ ] 新用户免费试用额度 (Credits)
     - [ ] 会员订阅系统 (Monthly Subscription)
-    - [ ] 接入支付网关 (推荐接入 **面包多**，适合个人开发者无照支持微信/支付宝)
+    - [ ] 接入支付网关 (推荐接入 **YunGouOS**，适合个人开发者无照直连微信/支付宝)
 - [ ] **多模型支持**: 已支持 DeepSeek V3，计划接入 Claude 3.5 Sonnet / GPT-4o
 - [ ] **多格式导出**: 支持导出为 Markdown、PDF 或直接生成长图
 

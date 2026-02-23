@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ContentFlow - AI 内容创作助手",
+  title: "墨流 (ContentFlow) - AI 内容创作助手",
   description: "一键生成多平台文案，支持小红书、知乎、微博、公众号",
 };
 

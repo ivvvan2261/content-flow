@@ -29,3 +29,19 @@ model UserCredit {
 
   @@index([userId])
 }
+
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String
+  outTradeNo    String   @unique
+  amount        String   // 支付金额 (e.g. "10.00")
+  creditAmount  Int      // 对应积分数量
+  status        String   // PENDING, COMPLETED, FAILED
+  provider      String   // YUNGOUOS
+  qrCode        String?  @db.Text // 支付二维码内容
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([outTradeNo])
+}

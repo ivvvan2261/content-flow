@@ -65,7 +65,7 @@ export default function GeneratePage() {
             <div className="bg-primary p-1.5 md:p-2 rounded-lg">
               <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-lg md:text-xl font-bold tracking-tight">ContentFlow</h1>
+            <h1 className="text-lg md:text-xl font-bold tracking-tight">墨流</h1>
           </Link>
           <div className="flex items-center gap-2 md:gap-4">
             <SignedOut>
