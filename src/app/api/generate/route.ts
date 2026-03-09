@@ -5,7 +5,7 @@ import { auth } from '@clerk/nextjs/server';
 import db from '@/lib/db';
 import { getUserCredits, deductCredit } from '@/lib/credits';
 
-export const maxDuration = 60; // Increase timeout for fetching subtitles
+export const maxDuration = 300; // Allow enough time for long article generation
 
 export async function POST(req: Request) {
   try {
@@ -194,7 +194,8 @@ export async function POST(req: Request) {
       model: deepseek('deepseek-chat'),
       system: systemPrompt,
       prompt: finalPrompt,
-      temperature: 0.7, // 适中的创造力
+      temperature: 0.7,
+      maxTokens: 8000, // Ensure long articles are fully generated
       onFinish: async ({ text }) => {
         if (userId && text) {
           try {

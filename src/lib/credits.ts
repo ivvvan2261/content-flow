@@ -1,6 +1,6 @@
-import db from '@/lib/db';
+import db from "@/lib/db";
 
-export const INITIAL_CREDITS = 5;
+export const INITIAL_CREDITS = 20;
 
 export async function getUserCredits(userId: string) {
   let userCredit = await db.userCredit.findUnique({
@@ -24,7 +24,7 @@ export async function deductCredit(userId: string, amount: number = 1) {
   const userCredit = await getUserCredits(userId);
 
   if (userCredit.balance < amount) {
-    throw new Error('Insufficient credits');
+    throw new Error("Insufficient credits");
   }
 
   return await db.userCredit.update({
