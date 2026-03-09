@@ -195,7 +195,7 @@ export async function POST(req: Request) {
       system: systemPrompt,
       prompt: finalPrompt,
       temperature: 0.7,
-      maxTokens: 8000, // Ensure long articles are fully generated
+      maxOutputTokens: 8000, // Ensure long articles are fully generated
       onFinish: async ({ text }) => {
         if (userId && text) {
           try {
