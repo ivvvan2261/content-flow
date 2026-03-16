@@ -46,18 +46,11 @@ export default function LandingPage() {
              </p>
            </div>
            
-           <div className="flex justify-center gap-4 pt-4">
-             <SignedOut>
-                <SignInButton mode="modal" forceRedirectUrl="/generate">
-                  <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
-                </SignInButton>
-             </SignedOut>
-             <SignedIn>
-                <Link href="/generate">
-                  <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
-                </Link>
-             </SignedIn>
-           </div>
+            <div className="flex justify-center gap-4 pt-4">
+              <Link href="/generate">
+                <Button size="lg" className="h-12 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">立即体验 AI 创作</Button>
+              </Link>
+            </div>
         </section>
 
         {/* Features Grid */}

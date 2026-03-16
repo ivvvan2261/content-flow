@@ -1,18 +1,30 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { getUserCredits, deductCredit } from '@/lib/credits';
+import { getUserCredits, deductCredit, getGuestUsage, incrementGuestUsage, GUEST_TRIAL_LIMIT } from '@/lib/credits';
 
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
+    let guestIp: string | null = null;
+    
+    // Check trial or credits
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Check credits
-    const userCredits = await getUserCredits(userId);
-    if (userCredits.balance <= 0) {
-      return NextResponse.json({ error: '积分不足，请充值' }, { status: 402 });
+      guestIp = req.headers.get("x-forwarded-for")?.split(',')[0].trim() || 
+                req.headers.get("x-real-ip") || 
+                "unknown";
+      
+      const guestUsage = await getGuestUsage(guestIp);
+      if (guestUsage.count >= GUEST_TRIAL_LIMIT) {
+        return NextResponse.json({ 
+          error: '请登录以继续使用',
+          isGuestLimit: true 
+        }, { status: 403 });
+      }
+    } else {
+      const userCredits = await getUserCredits(userId);
+      if (userCredits.balance <= 0) {
+        return NextResponse.json({ error: '积分不足，请充值' }, { status: 402 });
+      }
     }
 
     const { content, platform } = await req.json();
@@ -94,7 +106,11 @@ export async function POST(req: Request) {
 
     // Deduct credit after successful generation
     try {
-      await deductCredit(userId, 1);
+      if (userId) {
+        await deductCredit(userId, 1);
+      } else if (guestIp) {
+        await incrementGuestUsage(guestIp);
+      }
     } catch (error) {
       console.error('Failed to deduct credit:', error);
     }

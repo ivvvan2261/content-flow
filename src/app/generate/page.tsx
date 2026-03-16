@@ -25,6 +25,9 @@ export default function GeneratePage() {
     onError: (error) => {
       if (error.message.includes('402') || error.message.includes('积分不足')) {
         toast.error("积分不足，请充值后继续使用");
+      } else if (error.message.includes('403') || error.message.includes('请登录以继续使用')) {
+        toast.error("请登录以继续使用");
+        openSignIn();
       } else {
         toast.error("生成失败，请稍后重试");
       }
@@ -32,11 +35,7 @@ export default function GeneratePage() {
   });
 
   const handleGenerate = () => {
-    if (!userId) {
-      toast.error("请先登录再使用生成功能");
-      openSignIn();
-      return;
-    }
+    if (isLoading) return;
 
     if (inputType === 'text') {
       if (!inputContent) return;
@@ -69,6 +68,7 @@ export default function GeneratePage() {
           </Link>
           <div className="flex items-center gap-2 md:gap-4">
             <SignedOut>
+              <CreditDisplay />
               <SignInButton mode="modal">
                 <Button variant="outline" size="sm">登录 / 注册</Button>
               </SignInButton>
@@ -120,6 +120,7 @@ export default function GeneratePage() {
               platform={platform}
               setPlatform={handlePlatformChange}
               onRegenerate={handleGenerate}
+              onRequireSignIn={() => openSignIn()}
             />
           </section>
 

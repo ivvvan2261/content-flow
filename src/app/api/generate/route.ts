@@ -3,7 +3,7 @@ import { deepseek } from '@ai-sdk/deepseek';
 import { getBilibiliSubtitles } from '@/lib/bilibili';
 import { auth } from '@clerk/nextjs/server';
 import db from '@/lib/db';
-import { getUserCredits, deductCredit } from '@/lib/credits';
+import { getUserCredits, deductCredit, getGuestUsage, incrementGuestUsage, GUEST_TRIAL_LIMIT } from '@/lib/credits';
 
 export const maxDuration = 300; // Allow enough time for long article generation
 
@@ -12,20 +12,27 @@ export async function POST(req: Request) {
     const { userId } = await auth();
     const { prompt, platform, biliUrl } = await req.json();
 
-    if (!userId) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(/, /)[0] : "127.0.0.1";
 
-    // Check credits
-    const userCredits = await getUserCredits(userId);
-    if (userCredits.balance <= 0) {
-      return new Response(
-        JSON.stringify({ error: '积分不足，请充值' }),
-        { status: 402, headers: { 'Content-Type': 'application/json' } }
-      );
+    if (!userId) {
+      // Check guest usage
+      const guestUsage = await getGuestUsage(ip);
+      if (guestUsage.count >= GUEST_TRIAL_LIMIT) {
+        return new Response(
+          JSON.stringify({ error: '请登录以继续使用。' }),
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    } else {
+      // Check credits for registered users
+      const userCredits = await getUserCredits(userId);
+      if (userCredits.balance <= 0) {
+        return new Response(
+          JSON.stringify({ error: '积分不足，请充值' }),
+          { status: 402, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     if (!process.env.DEEPSEEK_API_KEY) {
@@ -197,9 +204,9 @@ export async function POST(req: Request) {
       temperature: 0.7,
       maxOutputTokens: 8000, // Ensure long articles are fully generated
       onFinish: async ({ text }) => {
-        if (userId && text) {
-          try {
-            // Deduct credit
+        try {
+          if (userId && text) {
+            // Deduct credit for registered users
             await deductCredit(userId, 1);
 
             await db.generationHistory.create({
@@ -210,9 +217,21 @@ export async function POST(req: Request) {
                 platform,
               },
             });
-          } catch (error) {
-            console.error('Failed to save history or deduct credit:', error);
+          } else if (!userId && text) {
+            // Increment guest usage for anonymous users
+            await incrementGuestUsage(ip);
+
+            await db.generationHistory.create({
+              data: {
+                userId: `guest_${ip}`,
+                originalContent: biliUrl ? `[Bilibili] ${biliUrl}` : (prompt || "No content provided"),
+                generatedContent: text,
+                platform,
+              },
+            });
           }
+        } catch (error) {
+          console.error('Failed to save history or update usage:', error);
         }
       },
     });

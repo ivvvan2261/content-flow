@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, RefreshCw, Loader2, Check, Image as ImageIcon, Download } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ContentOutputProps {
   content: string;
@@ -13,9 +14,10 @@ interface ContentOutputProps {
   platform: string;
   setPlatform: (v: string) => void;
   onRegenerate: () => void;
+  onRequireSignIn?: () => void;
 }
 
-export function ContentOutput({ content, isLoading, platform, setPlatform, onRegenerate }: ContentOutputProps) {
+export function ContentOutput({ content, isLoading, platform, setPlatform, onRegenerate, onRequireSignIn }: ContentOutputProps) {
   const [copied, setCopied] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
@@ -53,13 +55,17 @@ export function ContentOutput({ content, isLoading, platform, setPlatform, onReg
       const data = await response.json();
       
       if (data.error) {
-        throw new Error(data.error);
+        if (data.isGuestLimit && onRequireSignIn) {
+          onRequireSignIn();
+        }
+        toast.error(data.error);
+        return;
       }
       
       setGeneratedImage(data.url);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to generate image:', error);
-      // You might want to show a toast here
+      toast.error(error.message || "智能配图失败，请稍后重试");
     } finally {
       setIsGeneratingImage(false);
     }

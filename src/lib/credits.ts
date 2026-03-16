@@ -50,3 +50,35 @@ export async function addCredit(userId: string, amount: number) {
     },
   });
 }
+
+export const GUEST_TRIAL_LIMIT = 3;
+
+export async function getGuestUsage(ip: string) {
+  let guestUsage = await db.guestUsage.findUnique({
+    where: { ip },
+  });
+
+  if (!guestUsage) {
+    guestUsage = await db.guestUsage.create({
+      data: {
+        ip,
+        count: 0,
+      },
+    });
+  }
+
+  return guestUsage;
+}
+
+export async function incrementGuestUsage(ip: string) {
+  const usage = await getGuestUsage(ip);
+  
+  return await db.guestUsage.update({
+    where: { ip },
+    data: {
+      count: {
+        increment: 1,
+      },
+    },
+  });
+}

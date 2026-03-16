@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { getUserCredits } from '@/lib/credits';
+import { getUserCredits, getGuestUsage } from '@/lib/credits';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: Request) {
   const { userId } = await auth();
+  
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(/, /)[0] : "127.0.0.1";
+    const guestUsage = await getGuestUsage(ip);
+    return NextResponse.json({ balance: Math.max(0, 10 - guestUsage.count), isGuest: true });
   }
   
   const credits = await getUserCredits(userId);
-  return NextResponse.json(credits);
+  return NextResponse.json({ ...credits, isGuest: false });
 }
